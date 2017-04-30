@@ -18,7 +18,7 @@ for i=1:1:total
             j=j+1;
         else
             [x,y]=find(veinList(:,:,i)==1);
-            sub_vein_right_(1:size(x,1),1:2,j)=[x,y];
+            sub_vein_right_(1:size(x,1),1:2,k)=[x,y];
             k=k+1;
         end
     end
