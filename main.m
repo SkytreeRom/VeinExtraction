@@ -72,11 +72,11 @@ figure(2)
 imshow(imageout2);
 hold  on;
 plot(cout(:,2),cout(:,1),'or');
-[H,T,R] =  hough(imageout2,'RhoResolution',5,'Theta',-90:0.5:89);
-%[H,T,R] = hough(imageout2,'RhoResolution',5,'Theta',-40:0.5:40.5);
 
+[H,T,R] =  hough(imageout2,'RhoResolution',5,'Theta',-90:2:89);
+%[H,T,R] = hough(imageout2,'RhoResolution',5,'Theta',-40:0.5:40.5);
 % [H,T,R] = hough(imageout,'RhoResolution',11.5,'Theta',-45:0.5:45.5);
-Peaks=houghpeaks(H,10);
+Peaks=houghpeaks(H,5);
 %Peaks得到的极值点存在相似重复问题，对重复点筛选
 distVec=pdist(Peaks);%求peaks点两两之间的距离
 distMat=squareform(distVec);%将距离转换为矩阵形式

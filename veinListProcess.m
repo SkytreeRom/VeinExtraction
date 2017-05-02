@@ -27,11 +27,11 @@ end
 figure
 imshow(imageout);
 hold on;
-plot(main_vein_matrix(:,2),main_vein_matrix(:,1),'*');%œ‘ æmainvein
+plot(main_vein_matrix(:,2),main_vein_matrix(:,1),'.');%œ‘ æmainvein
 for i=1:1:j-1
-    plot(sub_vein_left_(:,2,i),sub_vein_left_(:,1,i),'*');
+    plot(sub_vein_left_(:,2,i),sub_vein_left_(:,1,i),'.');
 end
 for i=1:1:k-1
-    plot(sub_vein_right_(:,2,i),sub_vein_right_(:,1,i),'*');
+    plot(sub_vein_right_(:,2,i),sub_vein_right_(:,1,i),'.');
 end
 end
