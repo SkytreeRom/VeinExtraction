@@ -7,6 +7,7 @@ Testing VeinExtraction.
 
 
 ## Author  
+Yinhao Wang <njwangyh@gmail.com>  
 Yinhao Wang <njwangyh@gmail.com>
 
 
