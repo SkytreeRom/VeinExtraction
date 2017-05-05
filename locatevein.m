@@ -1,4 +1,4 @@
-                %定位树叶叶脉的具体坐标，目前只考虑定位最主要叶脉的坐标
+%定位树叶叶脉的具体坐标，目前只考虑定位最主要叶脉的坐标
 %processedImg：经过处理后，提取到的叶脉骨架
 %xy：经霍夫变换得到的主叶脉
 %
@@ -12,7 +12,7 @@ temImg(xy(1,2),xy(1,1))=1;
 i=xy(1,1);
 for j=xy(1,2):xy(2,2)
    
-   temImg=smallsearch(j,i,processedImg,temImg);
+    temImg=smallsearch(j,i,processedImg,temImg);
     oneInImg=find(temImg(j+1,:)==1);
     
     if size(oneInImg,2)>1

@@ -10,15 +10,20 @@ YUV=rgb2yuv(RGB);
 grayImage=YUV(:,:,1);
 grayImage=uint8(Normalize(grayImage));
 %%
+
 %获取叶子范围%
 level = graythresh(grayImage);
 binaryImage = im2bw(grayImage, level);
 %binaryImage = imbinarize(rgb2gray(RGB));
+
 binaryImage = imcomplement(binaryImage);% invert image
 binaryImage = imfill(binaryImage, 'holes');
 binaryImage = bwareaopen(binaryImage, round(0.1*numel(binaryImage)));%去除周围的小区域
-
-
+%进行扶正操作%
+% righting_angle=imageRotate(binaryImage);
+% binaryImage=imrotate(binaryImage,righting_angle,'bilinear','crop');
+% grayImage=imrotate(grayImage,righting_angle,'bilinear','crop');
+% RGB=imrotate(RGB,righting_angle,'bilinear','crop');
 %%
 %获取叶子轮廓%
 dim = size(binaryImage);
@@ -76,31 +81,46 @@ plot(cout(:,2),cout(:,1),'or');
 [H,T,R] =  hough(imageout2,'RhoResolution',5,'Theta',-90:2:89);
 %[H,T,R] = hough(imageout2,'RhoResolution',5,'Theta',-40:0.5:40.5);
 % [H,T,R] = hough(imageout,'RhoResolution',11.5,'Theta',-45:0.5:45.5);
-Peaks=houghpeaks(H,5);
+Peaks=houghpeaks(H,1);
 %Peaks得到的极值点存在相似重复问题，对重复点筛选
-distVec=pdist(Peaks);%求peaks点两两之间的距离
-distMat=squareform(distVec);%将距离转换为矩阵形式
-Peaks=distMatPreprocess(distMat,distVec,Peaks);
+% distVec=pdist(Peaks);%求peaks点两两之间的距离
+% distMat=squareform(distVec);%将距离转换为矩阵形式
+% Peaks=distMatPreprocess(distMat,distVec,Peaks);
 lines=houghlines(imageout2,T,R,Peaks,'FillGap',100,'MinLength',40);
-veinList=[];xyList=[];
-for k=1:length(lines)
-    xy=[lines(k).point1;lines(k).point2];
-    figure(2)
-    plot(xy(:,1),xy(:,2),'LineWidth',2);
-    vein=locatevein(imageout2,xy);
-    %     figure
-    %     imshow(res)\
-    xyList(k,:)=[lines(k).point1,lines(k).point2];
-    veinList(:,:,k)=vein;%所有包含主次叶脉的数组
+xy=[lines.point1;lines.point2];
+vein=locatevein(imageout2,xy);
+[y,x]=find(vein==1);
+main_vein_matrix=[x,y];
+[sub_vein_left_,sub_vein_right_]=findSubVein(cout,xy,imageout2);
+%显示主叶脉
+plot(main_vein_matrix(:,1),main_vein_matrix(:,2),'.');
+%显示左侧次叶脉
+for i=1:1:size(sub_vein_left_,3)
+    plot(sub_vein_left_(:,2,i),sub_vein_left_(:,1,i),'.');
 end
-veinListProcess(veinList,xyList,imageout2);
-
+%显示右侧次叶脉
+for i=1:1:size(sub_vein_right_,3)
+    plot(sub_vein_right_(:,2,i),sub_vein_right_(:,1,i),'.');
+end
+% veinList=[];xyList=[];
+% for k=1:length(lines)
+%     xy=[lines(k).point1;lines(k).point2];
+%     figure(2)
+%     plot(xy(:,1),xy(:,2),'LineWidth',2);
+%     vein=locatevein(imageout2,xy);
+%     %     figure
+%     %     imshow(res)\
+%     xyList(k,:)=[lines(k).point1,lines(k).point2];
+%     veinList(:,:,k)=vein;%所有包含主次叶脉的数组
+% end
+% veinListProcess(veinList,xyList,imageout2);
+%改变思路，此处只寻找主叶脉，借助主叶脉来寻找次叶脉，不再完全依靠霍夫变换寻找全部叶脉
 
 
 % k=1;
 % [c,r] = size(cout);
 % a = sqrt((xy(1,2)-xy(2,2))^2+(xy(1,1)-xy(2,1))^2);
-
+% 
 % for m=1:c
 %     b = sqrt((xy(1,2)-cout(m,1))^2+(xy(1,1)-cout(m,2))^2);
 %     c = sqrt((xy(2,2)-cout(m,1))^2+(xy(2,1)-cout(m,2))^2);
